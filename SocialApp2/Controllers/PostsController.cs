@@ -140,6 +140,7 @@ namespace SocialApp2.Controllers
             return View(post);
         }
 
+        //testing
         // POST: Posts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
