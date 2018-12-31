@@ -24,7 +24,7 @@ namespace SocialApp.Models
         [StringLength(1000)]
         public string Content { get; set; }
 
-        public User UserId { get; set; }
-        public int User { get; set; }   
+        public string UserId { get; set; }
+        public User User { get; set; }   
     }
 }

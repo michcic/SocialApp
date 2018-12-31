@@ -3,28 +3,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SocialApp.Models;
 using SocialApp2.Data;
+using SocialApp2.Models;
 
 namespace SocialApp2.Controllers
 {
     public class PostsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _user;
 
-        public PostsController(ApplicationDbContext context)
+        public PostsController(ApplicationDbContext context, UserManager<IdentityUser> user)
         {
             _context = context;
+            _user = user;
         }
 
         // GET: Posts
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Post.ToListAsync());
+            //get id of logged user
+            string userID = _user.GetUserId(HttpContext.User);
+            //find posts which have id equal to id of logged user
+            var posts = _context.Post.Where(m => m.UserId == userID);
+
+            return View(await posts.ToListAsync());
         }
 
         // GET: Posts/Details/5
@@ -62,6 +71,10 @@ namespace SocialApp2.Controllers
         {
             if (ModelState.IsValid)
             {
+                //get id of logged user
+                string userID = _user.GetUserId(HttpContext.User);
+                post.UserId = userID;               
+
                 _context.Add(post);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
