@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SocialApp.Models;
+using SocialApp2.Models;
 
 namespace SocialApp2.Data
 {
@@ -13,6 +14,13 @@ namespace SocialApp2.Data
             : base(options)
         {
         }
-        public DbSet<SocialApp.Models.Post> Post { get; set; }
+        public DbSet<Post> Post { get; set; }
+        public DbSet<Invitation> Invitation { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<User>().HasMany(m => m.Friends);
+        }
     }
 }

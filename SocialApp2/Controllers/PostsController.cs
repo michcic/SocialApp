@@ -73,10 +73,14 @@ namespace SocialApp2.Controllers
             {
                 //get id of logged user
                 string userID = _user.GetUserId(HttpContext.User);
-                post.UserId = userID;               
 
-                _context.Add(post);
-                await _context.SaveChangesAsync();
+                if(!String.IsNullOrEmpty(userID))
+                {
+                    post.UserId = userID;
+                    _context.Add(post);
+                    await _context.SaveChangesAsync();
+                }
+                             
                 return RedirectToAction(nameof(Index));
             }
             return View(post);
