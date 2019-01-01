@@ -20,7 +20,7 @@ namespace SocialApp2.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<User>().HasMany(m => m.Friends);
+            modelBuilder.Entity<User>().HasMany(m => m.Friends);       
         }
     }
 }

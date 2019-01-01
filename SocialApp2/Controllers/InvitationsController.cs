@@ -22,7 +22,7 @@ namespace SocialApp2
         // GET: Invitations
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Invitation.Include(i => i.Sender);
+            var applicationDbContext = _context.Invitation.Include(i => i.Receiver);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -35,7 +35,7 @@ namespace SocialApp2
             }
 
             var invitation = await _context.Invitation
-                .Include(i => i.Sender)
+                .Include(i => i.Receiver)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (invitation == null)
             {
@@ -131,7 +131,7 @@ namespace SocialApp2
             }
 
             var invitation = await _context.Invitation
-                .Include(i => i.Sender)
+                .Include(i => i.Receiver)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (invitation == null)
             {

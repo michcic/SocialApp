@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialApp2.Data;
 
-namespace SocialApp2.Data.Migrations
+namespace SocialApp2.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -222,11 +222,15 @@ namespace SocialApp2.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("ReceiverId");
+
+                    b.Property<DateTime>("ReleaseDate");
+
                     b.Property<string>("SenderId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SenderId");
+                    b.HasIndex("ReceiverId");
 
                     b.ToTable("Invitation");
                 });
@@ -298,9 +302,9 @@ namespace SocialApp2.Data.Migrations
 
             modelBuilder.Entity("SocialApp2.Models.Invitation", b =>
                 {
-                    b.HasOne("SocialApp2.Models.User", "Sender")
-                        .WithMany("Ivitations")
-                        .HasForeignKey("SenderId");
+                    b.HasOne("SocialApp2.Models.User", "Receiver")
+                        .WithMany("InvitationReceived")
+                        .HasForeignKey("ReceiverId");
                 });
 
             modelBuilder.Entity("SocialApp2.Models.User", b =>

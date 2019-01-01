@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialApp2.Data;
 
-namespace SocialApp2.Data.Migrations
+namespace SocialApp2.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20181230145918_initial")]
-    partial class initial
+    [Migration("20190101110045_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -75,6 +75,9 @@ namespace SocialApp2.Data.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired();
+
                     b.Property<string>("Email")
                         .HasMaxLength(256);
 
@@ -114,6 +117,8 @@ namespace SocialApp2.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -204,9 +209,45 @@ namespace SocialApp2.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(100);
 
+                    b.Property<string>("UserId");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Post");
+                });
+
+            modelBuilder.Entity("SocialApp2.Models.Invitation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ReceiverId");
+
+                    b.Property<DateTime>("ReleaseDate");
+
+                    b.Property<string>("SenderId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReceiverId");
+
+                    b.ToTable("Invitation");
+                });
+
+            modelBuilder.Entity("SocialApp2.Models.User", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<string>("UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("User");
+
+                    b.HasDiscriminator().HasValue("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -252,6 +293,27 @@ namespace SocialApp2.Data.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("SocialApp.Models.Post", b =>
+                {
+                    b.HasOne("SocialApp2.Models.User", "User")
+                        .WithMany("Posts")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("SocialApp2.Models.Invitation", b =>
+                {
+                    b.HasOne("SocialApp2.Models.User", "Receiver")
+                        .WithMany("InvitationReceived")
+                        .HasForeignKey("ReceiverId");
+                });
+
+            modelBuilder.Entity("SocialApp2.Models.User", b =>
+                {
+                    b.HasOne("SocialApp2.Models.User")
+                        .WithMany("Friends")
+                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }
