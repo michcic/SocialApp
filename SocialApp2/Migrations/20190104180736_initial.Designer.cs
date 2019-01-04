@@ -10,8 +10,8 @@ using SocialApp2.Data;
 namespace SocialApp2.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190101110045_Initial")]
-    partial class Initial
+    [Migration("20190104180736_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

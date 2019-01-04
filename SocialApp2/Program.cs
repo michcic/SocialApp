@@ -29,7 +29,12 @@ namespace SocialApp
                 {
                     var context = services.GetRequiredService<ApplicationDbContext>();
                     context.Database.Migrate();
-                    SeedData.Initialize(services);
+
+                    Task.Run(async () =>
+                    {
+                        await SeedData.InitializeAsync(services);
+                    }).GetAwaiter().GetResult();
+                    
                 }
                 catch (Exception ex)
                 {
