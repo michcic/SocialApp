@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,17 +14,75 @@ namespace SocialApp2
     public class InvitationsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _user;
 
-        public InvitationsController(ApplicationDbContext context)
+        public InvitationsController(ApplicationDbContext context, UserManager<IdentityUser> user)
         {
             _context = context;
+            _user = user;
         }
 
         // GET: Invitations
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Invitation.Include(i => i.Receiver);
-            return View(await applicationDbContext.ToListAsync());
+            string userID = _user.GetUserId(HttpContext.User);
+            // retrieve received nivitations
+            var invitations = _context.Invitation.Where(i => i.ReceiverId == userID);
+
+            return View(await invitations.ToListAsync());
+        }
+
+        public async Task<IActionResult> Search()
+        {
+            var invitations = _context.Invitation.Include(i => i.Receiver);
+            string userID = _user.GetUserId(HttpContext.User);
+
+            var users = _context.Users.Where(m => m.Id != userID);
+
+            return View(await users.ToListAsync());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Accept(int id)
+        {
+            string loggedUserID = _user.GetUserId(HttpContext.User);
+            var invitation = _context.Invitation.Single(m => m.Id == id);
+            string senderID =  _context.Users.Single(u => u.Id == invitation.SenderId).Id;
+
+            Friend friend = new Friend
+            {
+                UserReceiverId = loggedUserID,
+                UserSenderId = senderID
+            };
+
+            _context.Friends.Add(friend);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SendInvitation(string id)
+        {
+            string senderID = _user.GetUserId(HttpContext.User);
+            var sender = _context.Users.Single(m => m.Id == senderID);
+            string senderEmail = sender.Email;
+            var receiver = _context.Users.Single(m => m.Id == id);
+
+            Invitation invitation = new Invitation
+            {
+                ReceiverId = id,
+                SenderId = senderID,
+                SenderEmail = senderEmail,
+                ReleaseDate = DateTime.Now
+            }; 
+            
+            _context.Invitation.Add(invitation);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Invitations/Details/5

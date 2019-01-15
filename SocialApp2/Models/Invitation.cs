@@ -11,6 +11,7 @@ namespace SocialApp2.Models
     {
         public int Id { get; set; }
         public string SenderId { get; set; }
+        public string SenderEmail { get; set; }
 
         public string ReceiverId { get; set; }
         public User Receiver { get; set; }

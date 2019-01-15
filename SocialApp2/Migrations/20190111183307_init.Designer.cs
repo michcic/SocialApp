@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialApp2.Data;
 
 namespace SocialApp2.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190111183307_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -224,15 +226,15 @@ namespace SocialApp2.Migrations
 
                     b.Property<string>("UserId");
 
-                    b.Property<string>("UserReceiverId");
-
-                    b.Property<string>("UserSenderId");
+                    b.Property<string>("UserId1");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Friends");
+                    b.HasIndex("UserId1");
+
+                    b.ToTable("Friend");
                 });
 
             modelBuilder.Entity("SocialApp2.Models.Invitation", b =>
@@ -321,8 +323,12 @@ namespace SocialApp2.Migrations
             modelBuilder.Entity("SocialApp2.Models.Friend", b =>
                 {
                     b.HasOne("SocialApp2.Models.User")
-                        .WithMany("Friends")
+                        .WithMany("FriendsByReceived")
                         .HasForeignKey("UserId");
+
+                    b.HasOne("SocialApp2.Models.User")
+                        .WithMany("FriendsBySend")
+                        .HasForeignKey("UserId1");
                 });
 
             modelBuilder.Entity("SocialApp2.Models.Invitation", b =>

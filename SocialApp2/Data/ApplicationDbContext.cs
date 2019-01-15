@@ -16,11 +16,24 @@ namespace SocialApp2.Data
         }
         public DbSet<Post> Post { get; set; }
         public DbSet<Invitation> Invitation { get; set; }
+        public DbSet<Friend> Friends { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<User>().HasMany(m => m.Friends);       
+
+            /*modelBuilder.Entity<Friend>()
+                .HasKey(e => new { e.UserSenderId, e.UserReceiverId });
+
+            modelBuilder.Entity<Friend>()
+                .HasOne(e => e.UserSender)
+                .WithMany(e => e.FriendsByReceived)
+                .HasForeignKey(e => e.UserSenderId).OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Friend>()
+                .HasOne(e => e.UserReceiver)
+                .WithMany(e => e.FriendsBySend)
+                .HasForeignKey(e => e.UserReceiverId).OnDelete(DeleteBehavior.Cascade);*/
         }
     }
 }

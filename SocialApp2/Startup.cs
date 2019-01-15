@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using SocialApp2.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SocialApp2.Models;
 
 namespace SocialApp2
 {

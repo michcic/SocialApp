@@ -10,8 +10,8 @@ using SocialApp2.Data;
 namespace SocialApp2.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190104180736_initial")]
-    partial class initial
+    [Migration("20190113193939_friends")]
+    partial class friends
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -218,6 +218,25 @@ namespace SocialApp2.Migrations
                     b.ToTable("Post");
                 });
 
+            modelBuilder.Entity("SocialApp2.Models.Friend", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("UserId");
+
+                    b.Property<string>("UserReceiverId");
+
+                    b.Property<string>("UserSenderId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Friend");
+                });
+
             modelBuilder.Entity("SocialApp2.Models.Invitation", b =>
                 {
                     b.Property<int>("Id")
@@ -227,6 +246,8 @@ namespace SocialApp2.Migrations
                     b.Property<string>("ReceiverId");
 
                     b.Property<DateTime>("ReleaseDate");
+
+                    b.Property<string>("SenderEmail");
 
                     b.Property<string>("SenderId");
 
@@ -241,9 +262,6 @@ namespace SocialApp2.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<string>("UserId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("User");
 
@@ -302,18 +320,18 @@ namespace SocialApp2.Migrations
                         .HasForeignKey("UserId");
                 });
 
+            modelBuilder.Entity("SocialApp2.Models.Friend", b =>
+                {
+                    b.HasOne("SocialApp2.Models.User")
+                        .WithMany("Friends")
+                        .HasForeignKey("UserId");
+                });
+
             modelBuilder.Entity("SocialApp2.Models.Invitation", b =>
                 {
                     b.HasOne("SocialApp2.Models.User", "Receiver")
                         .WithMany("InvitationReceived")
                         .HasForeignKey("ReceiverId");
-                });
-
-            modelBuilder.Entity("SocialApp2.Models.User", b =>
-                {
-                    b.HasOne("SocialApp2.Models.User")
-                        .WithMany("Friends")
-                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }

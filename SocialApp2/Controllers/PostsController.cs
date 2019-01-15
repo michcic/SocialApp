@@ -30,6 +30,9 @@ namespace SocialApp2.Controllers
         {
             //get id of logged user
             string userID = _user.GetUserId(HttpContext.User);
+            List<string> friendIds = new List<string>();
+            List<Post> friendsPosts = new List<Post>();
+            _context.Friends.Where(f => f.UserSenderId == userID);
             //find posts which have id equal to id of logged user
             var posts = _context.Post.Where(m => m.UserId == userID);
 
