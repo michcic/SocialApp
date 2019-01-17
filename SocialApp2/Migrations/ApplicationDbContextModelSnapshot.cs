@@ -195,6 +195,10 @@ namespace SocialApp2.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasMaxLength(1000);

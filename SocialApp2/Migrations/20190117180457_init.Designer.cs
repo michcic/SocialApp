@@ -10,8 +10,8 @@ using SocialApp2.Data;
 namespace SocialApp2.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190113193939_friends")]
-    partial class friends
+    [Migration("20190117180457_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -197,6 +197,10 @@ namespace SocialApp2.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasMaxLength(1000);
@@ -234,7 +238,7 @@ namespace SocialApp2.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Friend");
+                    b.ToTable("Friends");
                 });
 
             modelBuilder.Entity("SocialApp2.Models.Invitation", b =>

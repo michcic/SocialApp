@@ -155,26 +155,21 @@ namespace SocialApp2.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Friend",
+                name: "Friends",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<string>(nullable: true),
-                    UserId1 = table.Column<string>(nullable: true)
+                    UserSenderId = table.Column<string>(nullable: true),
+                    UserReceiverId = table.Column<string>(nullable: true),
+                    UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Friend", x => x.Id);
+                    table.PrimaryKey("PK_Friends", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Friend_AspNetUsers_UserId",
+                        name: "FK_Friends_AspNetUsers_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Friend_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -210,6 +205,7 @@ namespace SocialApp2.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Likes = table.Column<int>(nullable: false),
                     ReleaseDate = table.Column<DateTime>(nullable: false),
+                    Author = table.Column<string>(maxLength: 100, nullable: false),
                     Title = table.Column<string>(maxLength: 100, nullable: false),
                     Content = table.Column<string>(maxLength: 1000, nullable: false),
                     UserId = table.Column<string>(nullable: true)
@@ -265,14 +261,9 @@ namespace SocialApp2.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Friend_UserId",
-                table: "Friend",
+                name: "IX_Friends_UserId",
+                table: "Friends",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Friend_UserId1",
-                table: "Friend",
-                column: "UserId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Invitation_ReceiverId",
@@ -303,7 +294,7 @@ namespace SocialApp2.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Friend");
+                name: "Friends");
 
             migrationBuilder.DropTable(
                 name: "Invitation");

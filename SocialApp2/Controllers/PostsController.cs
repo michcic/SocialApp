@@ -31,10 +31,24 @@ namespace SocialApp2.Controllers
             //get id of logged user
             string userID = _user.GetUserId(HttpContext.User);
             List<string> friendIds = new List<string>();
-            List<Post> friendsPosts = new List<Post>();
-            _context.Friends.Where(f => f.UserSenderId == userID);
+
+            var friends = _context.Friends.Where(f => f.UserSenderId == userID || f.UserReceiverId == userID);
+
+            foreach(var friend in friends)
+            {
+                if(friend.UserReceiverId == userID)
+                {
+                    friendIds.Add(friend.UserSenderId);
+                }
+                else
+                {
+                    friendIds.Add(friend.UserReceiverId);
+                }
+            }
+
             //find posts which have id equal to id of logged user
-            var posts = _context.Post.Where(m => m.UserId == userID);
+            // or id equals to friends ids
+            var posts = _context.Post.Where(m => m.UserId == userID || friendIds.Contains(m.UserId));
 
             return View(await posts.ToListAsync());
         }
@@ -76,10 +90,12 @@ namespace SocialApp2.Controllers
             {
                 //get id of logged user
                 string userID = _user.GetUserId(HttpContext.User);
+                var user = _context.Users.Single(u => u.Id == userID);
 
                 if(!String.IsNullOrEmpty(userID))
                 {
                     post.UserId = userID;
+                    post.Author = user.Email;
                     _context.Add(post);
                     await _context.SaveChangesAsync();
                 }

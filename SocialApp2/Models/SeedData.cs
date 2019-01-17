@@ -43,6 +43,7 @@ namespace SocialApp.Models
 
                 Post post1 = new Post
                 {
+                    Author = user1.Email,
                     Title = "Wheneeee Harry Met Sally",
                     ReleaseDate = DateTime.Parse("2018-1-12"),
                     Content = "amazing post bla bla bla bla bla",
@@ -52,6 +53,7 @@ namespace SocialApp.Models
 
                 Post post2 = new Post
                 {
+                    Author = user2.Email,
                     Title = "Wheneee heheesasdadhehe",
                     ReleaseDate = DateTime.Parse("2018-2-11"),
                     Content = "amazing post 3",
@@ -61,6 +63,7 @@ namespace SocialApp.Models
 
                 Post post3 = new Post
                 {
+                    Author = user3.Email,
                     Title = "When heheehehe",
                     ReleaseDate = DateTime.Parse("2018-2-11"),
                     Content = "amazdding post 3",
@@ -70,6 +73,7 @@ namespace SocialApp.Models
 
                 Post post4 = new Post
                 {
+                    Author = user4.Email,
                     Title = "huahuahuahuah",
                     ReleaseDate = DateTime.Parse("2018-4-12"),
                     Content = "amaddazing post 4",

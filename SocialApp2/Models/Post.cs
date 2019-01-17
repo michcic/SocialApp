@@ -12,6 +12,7 @@ namespace SocialApp.Models
     {
         public int Id { get; set; }
         public int Likes { get; set; }
+        public string Author { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime ReleaseDate { get; set; }
