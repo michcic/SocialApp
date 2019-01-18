@@ -57,6 +57,7 @@ namespace SocialApp2
             };
 
             _context.Friends.Add(friend);
+            _context.Invitation.Remove(invitation);
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
