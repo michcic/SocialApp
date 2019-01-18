@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,48 +12,30 @@ using SocialApp2.Models;
 
 namespace SocialApp2.Controllers
 {
-    public class PostsController : Controller
+    public class CommentsController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _user;
 
-        public PostsController(ApplicationDbContext context, UserManager<IdentityUser> user)
+        public CommentsController(ApplicationDbContext context, UserManager<IdentityUser> user)
         {
             _context = context;
             _user = user;
         }
 
-        // GET: Posts
-        [Authorize]
-        public async Task<IActionResult> Index()
+        // GET: Comments
+        public async Task<IActionResult> Index(int id)
         {
-            //get id of logged user
-            string userID = _user.GetUserId(HttpContext.User);
-            List<string> friendIds = new List<string>();
-
-            var friends = _context.Friends.Where(f => f.UserSenderId == userID || f.UserReceiverId == userID);
-
-            foreach(var friend in friends)
+            PostCommentView view = new PostCommentView()
             {
-                if(friend.UserReceiverId == userID)
-                {
-                    friendIds.Add(friend.UserSenderId);
-                }
-                else
-                {
-                    friendIds.Add(friend.UserReceiverId);
-                }
-            }
+                Post = await _context.Posts.SingleAsync(p => p.Id == id),
+                Comments = await _context.Comments.ToListAsync()
+            };
 
-            //find posts which have id equal to id of logged user
-            // or id equals to friends ids
-            var posts = _context.Posts.Where(m => m.UserId == userID || friendIds.Contains(m.UserId));
-
-            return View(await posts.ToListAsync());
+            return View(view);
         }
 
-        // GET: Posts/Details/5
-        [Authorize]
+        // GET: Comments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -62,51 +43,44 @@ namespace SocialApp2.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Posts
+            var comment = await _context.Comments
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (post == null)
+            if (comment == null)
             {
                 return NotFound();
             }
 
-            return View(post);
+            return View(comment);
         }
 
-        // GET: Posts/Create
-        [Authorize]
+        // GET: Comments/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Posts/Create
+        // POST: Comments/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Likes,ReleaseDate,Title,Content")] Post post)
+        public async Task<IActionResult> Create([Bind("Id,Content,Date")] Comment comment, int id)
         {
+            Post post = await _context.Posts.SingleAsync(p => p.Id == id);
+            User user = (User) await _user.GetUserAsync(HttpContext.User);
+
             if (ModelState.IsValid)
             {
-                //get id of logged user
-                string userID = _user.GetUserId(HttpContext.User);
-                var user = _context.Users.Single(u => u.Id == userID);
-
-                if(!String.IsNullOrEmpty(userID))
-                {
-                    post.UserId = userID;
-                    post.Author = user.Email;
-                    _context.Add(post);
-                    await _context.SaveChangesAsync();
-                }
-                             
+                comment.Post = post;
+                comment.User = user;
+                _context.Add(comment);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(post);
+            return View(comment);
         }
 
-        // GET: Posts/Edit/5
-        [Authorize]
+        // GET: Comments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -114,22 +88,22 @@ namespace SocialApp2.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Posts.FindAsync(id);
-            if (post == null)
+            var comment = await _context.Comments.FindAsync(id);
+            if (comment == null)
             {
                 return NotFound();
             }
-            return View(post);
+            return View(comment);
         }
 
-        // POST: Posts/Edit/5
+        // POST: Comments/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Likes,ReleaseDate,Title,Content")] Post post)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Content,Date")] Comment comment)
         {
-            if (id != post.Id)
+            if (id != comment.Id)
             {
                 return NotFound();
             }
@@ -138,12 +112,12 @@ namespace SocialApp2.Controllers
             {
                 try
                 {
-                    _context.Update(post);
+                    _context.Update(comment);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PostExists(post.Id))
+                    if (!CommentExists(comment.Id))
                     {
                         return NotFound();
                     }
@@ -154,11 +128,10 @@ namespace SocialApp2.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(post);
+            return View(comment);
         }
 
-        // GET: Posts/Delete/5
-        [Authorize]
+        // GET: Comments/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -166,31 +139,30 @@ namespace SocialApp2.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Posts
+            var comment = await _context.Comments
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (post == null)
+            if (comment == null)
             {
                 return NotFound();
             }
 
-            return View(post);
+            return View(comment);
         }
 
-        //testing
-        // POST: Posts/Delete/5
+        // POST: Comments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var post = await _context.Posts.FindAsync(id);
-            _context.Posts.Remove(post);
+            var comment = await _context.Comments.FindAsync(id);
+            _context.Comments.Remove(comment);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PostExists(int id)
+        private bool CommentExists(int id)
         {
-            return _context.Posts.Any(e => e.Id == id);
+            return _context.Comments.Any(e => e.Id == id);
         }
     }
 }

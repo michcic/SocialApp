@@ -36,7 +36,7 @@ namespace SocialApp.Models
                 await userManager.CreateAsync(user4, "!Abc123");
 
                 // Look for any Posts.
-                if (context.Post.Any())
+                if (context.Posts.Any())
                 {
                     return;   // DB has been seeded
                 }
@@ -81,7 +81,7 @@ namespace SocialApp.Models
                     UserId = user4.Id
                 };
 
-                context.Post.AddRange(
+                context.Posts.AddRange(
                     post1, post2, post3, post4
                 );
 

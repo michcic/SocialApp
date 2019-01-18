@@ -14,9 +14,11 @@ namespace SocialApp2.Data
             : base(options)
         {
         }
-        public DbSet<Post> Post { get; set; }
+
+        public DbSet<Post> Posts { get; set; }
         public DbSet<Invitation> Invitation { get; set; }
         public DbSet<Friend> Friends { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
