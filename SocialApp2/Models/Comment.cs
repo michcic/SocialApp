@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,6 +10,7 @@ namespace SocialApp2.Models
 {
     public class Comment
     {
+        [Key]
         public int Id { get; set; }
 
         [Required]
@@ -19,7 +21,7 @@ namespace SocialApp2.Models
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime Date { get; set; }
 
-        public virtual User User { get; set; }
-        public virtual Post Post { get; set; }
+        public string UserID { get; set; }
+        public int PostID { get; set; }
     }
 }

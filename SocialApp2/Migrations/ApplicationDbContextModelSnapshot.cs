@@ -230,15 +230,11 @@ namespace SocialApp2.Migrations
 
                     b.Property<DateTime>("Date");
 
-                    b.Property<int?>("PostId");
+                    b.Property<int>("PostID");
 
-                    b.Property<string>("UserId");
+                    b.Property<string>("UserID");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PostId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Comments");
                 });
@@ -342,17 +338,6 @@ namespace SocialApp2.Migrations
                 {
                     b.HasOne("SocialApp2.Models.User", "User")
                         .WithMany("Posts")
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("SocialApp2.Models.Comment", b =>
-                {
-                    b.HasOne("SocialApp.Models.Post", "Post")
-                        .WithMany()
-                        .HasForeignKey("PostId");
-
-                    b.HasOne("SocialApp2.Models.User", "User")
-                        .WithMany()
                         .HasForeignKey("UserId");
                 });
 

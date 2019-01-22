@@ -85,6 +85,26 @@ namespace SocialApp.Models
                     post1, post2, post3, post4
                 );
 
+                // Look for any Posts.
+                if (context.Friends.Any())
+                {
+                    return;   // DB has been seeded
+                }
+
+                Friend friends = new Friend
+                {
+                    UserReceiverId = user1.Id,
+                    UserSenderId = user2.Id
+                };
+
+                Friend friends2 = new Friend
+                {
+                    UserReceiverId = user1.Id,
+                    UserSenderId = user3.Id
+                };
+
+                context.Friends.AddRange(friends, friends2);
+
                 context.SaveChanges();
             }
 

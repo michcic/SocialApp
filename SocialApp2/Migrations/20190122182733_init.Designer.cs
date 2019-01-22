@@ -10,7 +10,7 @@ using SocialApp2.Data;
 namespace SocialApp2.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190117180457_init")]
+    [Migration("20190122182733_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -197,9 +197,7 @@ namespace SocialApp2.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Author")
-                        .IsRequired()
-                        .HasMaxLength(100);
+                    b.Property<string>("Author");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -219,7 +217,28 @@ namespace SocialApp2.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Post");
+                    b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("SocialApp2.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(5000);
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<int>("PostID");
+
+                    b.Property<string>("UserID");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("SocialApp2.Models.Friend", b =>

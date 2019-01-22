@@ -64,15 +64,15 @@ namespace SocialApp2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Content,Date")] Comment comment, int id)
+        public async Task<IActionResult> Create([Bind("Content,Date")] Comment comment, int id)
         {
             Post post = await _context.Posts.SingleAsync(p => p.Id == id);
             User user = (User) await _user.GetUserAsync(HttpContext.User);
 
             if (ModelState.IsValid)
             {
-                comment.Post = post;
-                comment.User = user;
+                comment.PostID = post.Id;
+                comment.UserID = user.Id;
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
